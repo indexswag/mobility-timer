@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A212B">
+<title>Mobility &amp; Balance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --slate:#1A212B; --slate-lift:#232C38; --slate-edge:#38424F;
+    --ivory:#EDE8DD; --dim:#8794A3;
+    --sinew:#9DB88F; --oxide:#C2604A; --brass:#D9A441;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--slate); color:var(--ivory);
+    font-family:'Barlow',system-ui,sans-serif; font-size:17px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; display:flex; justify-content:center;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  #app{width:100%;max-width:520px;display:flex;flex-direction:column;
+       min-height:100vh;min-height:100dvh;padding:18px 22px 24px}
+  .screen{display:none;flex:1;flex-direction:column}
+  .screen.on{display:flex}
+
+  .fig{width:100%;height:100%;display:block}
+  .fig .trunk{fill:none;stroke:var(--ivory);stroke-width:15;stroke-linecap:round}
+  .fig .limb{fill:none;stroke:var(--ivory);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+  .fig .far{fill:none;stroke:#57636F;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+  .fig .head{fill:var(--ivory)}
+  .fig .foot{fill:none;stroke:var(--ivory);stroke-width:6.5;stroke-linecap:round}
+  .fig .footfar{fill:none;stroke:#57636F;stroke-width:6.5;stroke-linecap:round}
+  .fig .prop{fill:none;stroke:var(--slate-edge);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+  .fig .ground{stroke:var(--slate-edge);stroke-width:3;stroke-linecap:round}
+  .fig .hot{fill:none;stroke:var(--phase,var(--sinew));stroke-width:6.5;stroke-linecap:round;stroke-linejoin:round}
+  .fig .arrow{fill:none;stroke:var(--phase,var(--sinew));stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+  .fig .dot{fill:var(--phase,var(--sinew))}
+  .fig .shut{fill:none;stroke:var(--slate);stroke-width:2.6;stroke-linecap:round}
+  .fig .leg{fill:none;stroke:var(--ivory);stroke-width:13;stroke-linecap:round;stroke-linejoin:round}
+  .fig .legfar{fill:none;stroke:#57636F;stroke-width:13;stroke-linecap:round;stroke-linejoin:round}
+  .fig .sole{fill:none;stroke:var(--ivory);stroke-width:9;stroke-linecap:round}
+  .fig .solefar{fill:none;stroke:#57636F;stroke-width:9;stroke-linecap:round}
+  .fig .sp-book{transform-box:view-box;transform-origin:74px 74px;
+                animation:sp-book 3.4s ease-in-out infinite alternate}
+  @keyframes sp-book{from{transform:rotate(0deg)}to{transform:rotate(-155deg)}}
+  .fig .sp-hinge{transform-box:view-box;transform-origin:100px 98px;
+                 animation:sp-hinge 3s ease-in-out infinite alternate}
+  @keyframes sp-hinge{from{transform:rotate(0deg)}to{transform:rotate(-70deg)}}
+  .fig .sp-cycle > *{opacity:.22;animation:sp-flick 4s linear infinite}
+  @keyframes sp-flick{0%,9%{opacity:1}18%,100%{opacity:.22}}
+  .fig .sp-fr{transform-box:view-box;animation:sp-fr 12s ease-in-out infinite}
+  @keyframes sp-fr{
+    0%{transform:translate(0,0)}
+    4%,6%{transform:translate(0,-44px)}
+    10%{transform:translate(0,0)}
+    14%,16%{transform:translate(31px,-31px)}
+    20%{transform:translate(0,0)}
+    24%,26%{transform:translate(44px,0)}
+    30%{transform:translate(0,0)}
+    34%,36%{transform:translate(31px,31px)}
+    40%{transform:translate(0,0)}
+    44%,46%{transform:translate(0,44px)}
+    50%,100%{transform:translate(0,0)}}
+  .fig .sp-fl{transform-box:view-box;animation:sp-fl 12s ease-in-out infinite}
+  @keyframes sp-fl{
+    0%,50%{transform:translate(0,0)}
+    54%,56%{transform:translate(0,44px)}
+    60%{transform:translate(0,0)}
+    64%,66%{transform:translate(-31px,31px)}
+    70%{transform:translate(0,0)}
+    74%,76%{transform:translate(-44px,0)}
+    80%{transform:translate(0,0)}
+    84%,86%{transform:translate(-31px,-31px)}
+    90%{transform:translate(0,0)}
+    94%,96%{transform:translate(0,-44px)}
+    100%{transform:translate(0,0)}}
+  .fig .sp-print > *{opacity:.18;animation:sp-drop 4.5s linear infinite}
+  @keyframes sp-drop{0%,4%{opacity:.18}14%,86%{opacity:1}96%,100%{opacity:.18}}
+  .fig .sp-print > *:nth-child(1){animation-delay:0s}
+  .fig .sp-print > *:nth-child(2){animation-delay:.5s}
+  .fig .sp-print > *:nth-child(3){animation-delay:1s}
+  .fig .sp-print > *:nth-child(4){animation-delay:1.5s}
+  .fig .sp-print > *:nth-child(5){animation-delay:2s}
+
+  .masthead{padding:14px 0 26px}
+  .masthead h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:44px;line-height:.95}
+  .masthead p{color:var(--dim);margin-top:10px;max-width:34ch}
+  .pick{width:100%;text-align:left;background:var(--slate-lift);border:1px solid var(--slate-edge);
+        border-left:4px solid var(--accent,var(--sinew));border-radius:var(--radius);color:var(--ivory);
+        padding:18px 20px;margin-bottom:14px;cursor:pointer;font:inherit;display:flex;gap:16px;align-items:center}
+  .pick:hover,.pick:focus-visible{background:#26303D}
+  .pick .txt{flex:1}
+  .pick .thumb{width:74px;height:60px;flex:0 0 auto;opacity:.9}
+  .pick h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:29px;line-height:1.05}
+  .pick .meta{color:var(--dim);font-size:15px;margin-top:2px}
+  .pick .where{color:var(--ivory);opacity:.7;font-size:14.5px;margin-top:8px}
+  .toggles{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .toggle{background:transparent;border:1px solid var(--slate-edge);color:var(--dim);border-radius:99px;
+          padding:7px 15px;font:inherit;font-size:14.5px;cursor:pointer}
+  .toggle[aria-pressed="true"]{border-color:var(--sinew);color:var(--sinew)}
+  .note{color:var(--dim);font-size:14.5px;margin-top:20px;padding-top:16px;
+        border-top:1px solid var(--slate-edge);max-width:42ch}
+  .note strong{color:var(--ivory);font-weight:600}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:12px}
+  .quit{background:none;border:none;color:var(--dim);font:inherit;font-size:15px;cursor:pointer;padding:6px 2px}
+  .quit:hover{color:var(--ivory)}
+  .count{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--dim)}
+  .pips{display:flex;gap:4px;padding-bottom:16px}
+  .pip{height:3px;flex:1;background:var(--slate-edge);border-radius:2px}
+  .pip.done{background:var(--sinew)} .pip.now{background:var(--ivory)}
+
+  .stage{background:var(--slate-lift);border:1px solid var(--slate-edge);border-radius:var(--radius);
+         flex:0 1 auto;min-height:130px;height:clamp(130px,26vh,190px);padding:10px;margin-bottom:16px}
+
+  .clockrow{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+  .clock{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:70px;line-height:.95;
+         font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .phase{font-family:'Barlow Condensed',sans-serif;font-size:20px;letter-spacing:.08em;
+         color:var(--phase,var(--sinew));text-transform:uppercase}
+  .bar{height:5px;background:var(--slate-edge);border-radius:3px;overflow:hidden;margin:8px 0 16px}
+  .bar i{display:block;height:100%;width:100%;background:var(--phase,var(--sinew));border-radius:3px;
+         transform-origin:left center}
+
+  .movename{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:33px;line-height:1.05}
+  .side{color:var(--phase,var(--sinew));font-family:'Barlow Condensed',sans-serif;font-size:20px;
+        letter-spacing:.03em;min-height:24px;margin-bottom:8px}
+  .steps{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .steps li{position:relative;padding-left:18px;font-size:16px;opacity:.85;max-width:42ch}
+  .steps li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:2px;
+                    background:var(--phase,var(--sinew));opacity:.85}
+
+  .spacer{flex:1;min-height:12px}
+  .controls{display:flex;gap:12px;padding-top:18px}
+  .btn{flex:1;background:var(--slate-lift);border:1px solid var(--slate-edge);color:var(--ivory);
+       border-radius:var(--radius);padding:15px 12px;font-family:'Barlow Condensed',sans-serif;
+       font-size:21px;cursor:pointer}
+  .btn:hover,.btn:focus-visible{background:#26303D}
+  .btn.primary{background:var(--ivory);color:var(--slate);border-color:var(--ivory)}
+  .btn.ghost{flex:0 0 auto;padding:15px 20px;color:var(--dim)}
+
+  .done-inner{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+  .done-inner h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:46px;line-height:1}
+  .done-inner p{color:var(--dim);max-width:36ch}
+
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}
+    .fig .sp-cycle > *,.fig .sp-print > *{opacity:1}}
+  @media (max-height:700px){
+    .clock{font-size:56px} .movename{font-size:28px} .steps li{font-size:15px}
+    .stage{height:clamp(112px,20vh,150px)}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <section class="screen on" id="menu">
+    <div class="masthead">
+      <h1>Mobility<br>&amp; Balance</h1>
+      <p>Monday, Wednesday, Friday. Both routines, about sixteen minutes total.</p>
+    </div>
+
+    <button class="pick" data-routine="balance" style="--accent:var(--oxide)">
+      <div class="txt">
+        <h2>Balance</h2>
+        <div class="meta">5 moves &middot; about 6 minutes</div>
+        <div class="where">At the gym, right after you finish lifting.</div>
+      </div>
+      <svg class="thumb fig" viewBox="0 0 200 160" style="--phase:var(--oxide)" aria-hidden="true">
+        <line class="ground" x1="18" y1="146" x2="182" y2="146"/>
+        <path class="far" d="M86 67 L72 96"/>
+        <path class="limb" d="M92 96 L116 106 L110 128"/>
+        <path class="hot" d="M88 96 L89 140"/>
+        <path class="foot" d="M79 143 H100"/>
+        <path class="trunk" d="M88 58 L88 96"/>
+        <circle class="head" cx="87" cy="45" r="10.5"/>
+        <path class="limb" d="M90 66 L102 96"/>
+      </svg>
+    </button>
+
+    <button class="pick" data-routine="mobility" style="--accent:var(--sinew)">
+      <div class="txt">
+        <h2>Mobility</h2>
+        <div class="meta">7 holds &middot; about 10 minutes</div>
+        <div class="where">Evening, during the wait in your oral care routine.</div>
+      </div>
+      <svg class="thumb fig" viewBox="0 0 200 160" aria-hidden="true">
+        <line class="ground" x1="18" y1="146" x2="182" y2="146"/>
+        <path class="far" d="M74 118 L112 119 L80 139"/>
+        <path class="limb" d="M78 116 L118 114 L84 140"/>
+        <path class="hot" d="M68 143 H102"/>
+        <path class="trunk" d="M78 116 L89 80"/>
+        <circle class="head" cx="92" cy="67" r="10.5"/>
+        <path class="limb" d="M89 81 L114 98"/>
+      </svg>
+    </button>
+
+    <div class="toggles">
+      <button class="toggle" id="t-voice" aria-pressed="true">Spoken cues</button>
+      <button class="toggle" id="t-beep" aria-pressed="true">Beeps</button>
+    </div>
+
+    <p class="note">
+      Stretch to mild discomfort, never sharp pain. On balance moves, stand where you can grab a wall.
+      <strong>The screen stays awake during a session.</strong>
+    </p>
+  </section>
+
+  <section class="screen" id="session">
+    <div class="topbar">
+      <button class="quit" id="quit">Back</button>
+      <div class="count" id="count">1 of 7</div>
+    </div>
+    <div class="pips" id="pips"></div>
+
+    <div class="stage" id="stage"></div>
+
+    <div class="clockrow">
+      <div class="clock" id="clock">0:45</div>
+      <div class="phase" id="phase">Hold</div>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+
+    <div class="movename" id="movename">Couch stretch</div>
+    <div class="side" id="side">Left leg back</div>
+    <ul class="steps" id="steps"></ul>
+
+    <div class="spacer"></div>
+    <div class="controls">
+      <button class="btn ghost" id="back">Back</button>
+      <button class="btn primary" id="playpause">Pause</button>
+      <button class="btn" id="skip">Skip</button>
+    </div>
+  </section>
+
+  <section class="screen" id="done">
+    <div class="done-inner">
+      <h2 id="done-title">Mobility done</h2>
+      <p id="done-sub"></p>
+      <p class="note" id="done-streak" style="margin-top:6px"></p>
+    </div>
+    <div class="controls"><button class="btn primary" id="done-home">Back to start</button></div>
+  </section>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const G = '<line class="ground" x1="10" y1="146" x2="190" y2="146"/>';
+const S = (inner) => '<svg class="fig" viewBox="0 0 200 160" aria-hidden="true">' + inner + '</svg>';
+
+const ART = {
+  couch: S(G +
+    '<path class="prop" d="M136 146 V106 H192 V62"/>' +
+    '<path class="far" d="M104 66 L92 86 L82 100"/>' +
+    '<path class="limb" d="M116 142 L150 110"/>' +
+    '<path class="limb" d="M116 142 L108 100"/>' +
+    '<path class="limb" d="M108 100 L74 110 L72 140"/>' +
+    '<path class="foot" d="M60 143 H80"/>' +
+    '<path class="foot" d="M109 143 H125"/>' +
+    '<path class="trunk" d="M108 98 L102 62"/>' +
+    '<circle class="head" cx="99" cy="48" r="10.5"/>' +
+    '<path class="limb" d="M103 66 L90 84 L79 98"/>' +
+    '<path class="hot" d="M118 94 q9 9 4 20"/>'),
+
+  lat: S(G +
+    '<path class="prop" d="M126 146 V98 H192"/>' +
+    '<path class="limb" d="M46 142 L74 142"/>' +
+    '<path class="limb" d="M74 142 L80 114"/>' +
+    '<path class="far" d="M124 97 L150 99 L170 89"/>' +
+    '<path class="trunk" d="M80 112 L126 95"/>' +
+    '<circle class="head" cx="139" cy="107" r="10.5"/>' +
+    '<path class="limb" d="M126 93 L152 94 L174 84"/>' +
+    '<path class="hot" d="M88 101 L124 88" stroke-dasharray="5 7"/>'),
+
+  ninety: S(
+    '<path class="legfar" d="M90 82 L56 88 L52 54"/>' +
+    '<path class="solefar" d="M52 54 L47 42"/>' +
+    '<path class="trunk" d="M100 50 L100 78" stroke-width="17"/>' +
+    '<path class="trunk" d="M87 81 L113 81" stroke-width="17"/>' +
+    '<path class="trunk" d="M84 47 L116 47" stroke-width="12"/>' +
+    '<circle class="head" cx="100" cy="26" r="12"/>' +
+    '<path class="leg" d="M110 85 L116 111 L77 119"/>' +
+    '<path class="sole" d="M77 119 L65 125"/>' +
+    '<text x="140" y="110" fill="var(--phase,var(--sinew))" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">90</text>' +
+    '<text x="36" y="74" fill="var(--phase,var(--sinew))" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">90</text>' +
+    '<path class="arrow" d="M164 46 L164 86 M164 86 l-5 -8 M164 86 l5 -8"/>' +
+    '<text x="96" y="142" fill="#7C8794" font-size="12" font-family="Barlow Condensed, sans-serif" text-anchor="middle">front leg</text>' +
+    '<text x="28" y="32" fill="#7C8794" font-size="12" font-family="Barlow Condensed, sans-serif" text-anchor="middle">back leg</text>'),
+
+  thoracic: S(
+    '<path class="far" d="M74 78 L84 114"/>' +
+    '<path class="limb" d="M114 74 L118 108 L152 112"/>' +
+    '<path class="trunk" d="M60 74 L112 74"/>' +
+    '<circle class="head" cx="46" cy="74" r="10.5"/>' +
+    '<path class="arrow" d="M104 112 A 40 40 0 0 0 104 34" stroke-dasharray="4 6"/>' +
+    '<path class="arrow" d="M104 34 l-8 6 M104 34 l7 7"/>' +
+    '<g class="sp-book"><path class="limb" d="M74 74 L84 110"/></g>'),
+
+  pec: S(G +
+    '<path class="prop" d="M150 10 V146"/>' +
+    '<path class="far" d="M88 98 L72 120 L66 140"/>' +
+    '<path class="footfar" d="M58 143 H74"/>' +
+    '<path class="limb" d="M92 98 L116 118 L122 140"/>' +
+    '<path class="foot" d="M114 143 H132"/>' +
+    '<path class="trunk" d="M90 58 L90 98"/>' +
+    '<circle class="head" cx="89" cy="45" r="10.5"/>' +
+    '<path class="limb" d="M100 62 L136 70 L146 38"/>' +
+    '<path class="hot" d="M82 66 q12 -8 22 -2"/>'),
+
+  calf: S(G +
+    '<path class="prop" d="M30 10 V146"/>' +
+    '<path class="far" d="M96 67 L44 65"/>' +
+    '<path class="limb" d="M114 94 L84 114 L80 140"/>' +
+    '<path class="foot" d="M70 143 H90"/>' +
+    '<path class="limb" d="M114 94 L148 140"/>' +
+    '<path class="foot" d="M140 143 H160"/>' +
+    '<path class="trunk" d="M114 94 L96 64"/>' +
+    '<circle class="head" cx="89" cy="52" r="10.5"/>' +
+    '<path class="limb" d="M94 62 L40 56"/>' +
+    '<path class="hot" d="M130 110 q12 10 12 24"/>'),
+
+  squat: S(G +
+    '<path class="far" d="M74 118 L112 119 L80 139"/>' +
+    '<path class="limb" d="M78 116 L118 114 L84 140"/>' +
+    '<path class="hot" d="M68 143 H102"/>' +
+    '<path class="trunk" d="M78 116 L89 80"/>' +
+    '<circle class="head" cx="92" cy="67" r="10.5"/>' +
+    '<path class="far" d="M89 85 L110 104"/>' +
+    '<path class="limb" d="M89 81 L114 98"/>'),
+
+  stand: S(G +
+    '<path class="far" d="M86 67 L72 96"/>' +
+    '<path class="limb" d="M92 96 L116 106 L110 128"/>' +
+    '<path class="hot" d="M88 96 L89 140"/>' +
+    '<path class="foot" d="M79 143 H100"/>' +
+    '<path class="trunk" d="M88 58 L88 96"/>' +
+    '<circle class="head" cx="87" cy="45" r="10.5"/>' +
+    '<path class="limb" d="M90 66 L102 96"/>' +
+    '<path class="arrow" d="M100 44 H156" stroke-dasharray="4 7"/>' +
+    '<circle class="dot" cx="164" cy="44" r="5"/>'),
+
+  step: S(
+    '<circle cx="100" cy="82" r="58" fill="none" stroke="#38424F" stroke-width="2"/>' +
+    '<path stroke="#38424F" stroke-width="2" d="M100 24 v9 M162 82 h-9 M100 140 v-9 M38 82 h9"/>' +
+    '<path stroke="#38424F" stroke-width="2" stroke-linecap="round" d="M135 47 L141 41 M135 117 L141 123 M65 117 L59 123 M65 47 L59 41"/>' +
+    '<text x="100" y="18" fill="#7C8794" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">12</text>' +
+    '<text x="174" y="87" fill="#7C8794" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">3</text>' +
+    '<text x="100" y="155" fill="#7C8794" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">6</text>' +
+    '<text x="26" y="87" fill="#7C8794" font-size="14" font-family="Barlow Condensed, sans-serif" text-anchor="middle">9</text>' +
+    '<circle cx="100" cy="82" r="15" fill="#2A3340" stroke="#57636F" stroke-width="2"/>' +
+    '<path stroke="#57636F" stroke-width="2.5" fill="none" stroke-linecap="round" d="M94 72 L100 66 L106 72"/>' +
+    '<g class="sp-fl">' +
+      '<rect x="78" y="70" width="15" height="25" rx="7.5" fill="var(--phase,var(--sinew))"/>' +
+      '<text x="85.5" y="88" fill="#1A212B" font-size="13" font-weight="600" font-family="Barlow Condensed, sans-serif" text-anchor="middle">L</text>' +
+    '</g>' +
+    '<g class="sp-fr">' +
+      '<rect x="107" y="70" width="15" height="25" rx="7.5" fill="var(--phase,var(--sinew))"/>' +
+      '<text x="114.5" y="88" fill="#1A212B" font-size="13" font-weight="600" font-family="Barlow Condensed, sans-serif" text-anchor="middle">R</text>' +
+    '</g>'),
+
+  slrdl: S(G +
+    '<path class="hot" d="M100 98 L100 140"/>' +
+    '<path class="foot" d="M90 143 H112"/>' +
+    '<g class="sp-hinge">' +
+      '<path class="limb" d="M100 98 L104 136"/>' +
+      '<path class="foot" d="M98 140 L112 140"/>' +
+      '<path class="far" d="M100 66 L98 96"/>' +
+      '<path class="trunk" d="M100 96 L100 58"/>' +
+      '<circle class="head" cx="100" cy="46" r="10.5"/>' +
+      '<path class="limb" d="M100 64 L104 96"/>' +
+    '</g>'),
+
+  closed: S(G +
+    '<path class="far" d="M98 67 L84 96"/>' +
+    '<path class="limb" d="M104 96 L128 106 L122 128"/>' +
+    '<path class="hot" d="M100 96 L101 140"/>' +
+    '<path class="foot" d="M91 143 H112"/>' +
+    '<path class="trunk" d="M100 58 L100 96"/>' +
+    '<circle class="head" cx="99" cy="45" r="10.5"/>' +
+    '<path class="shut" d="M94 44 q5 5 10 0"/>' +
+    '<path class="limb" d="M102 66 L114 96"/>' +
+    '<path class="arrow" d="M72 34 q-10 10 0 20"/>' +
+    '<path class="arrow" d="M126 34 q10 10 0 20"/>'),
+
+  tandem: S(
+    '<line class="ground" x1="18" y1="128" x2="182" y2="128" stroke-dasharray="6 7"/>' +
+    '<g class="hot sp-print" stroke-width="4.5">' +
+      '<rect x="24" y="115" width="28" height="13" rx="6.5" fill="none"/>' +
+      '<rect x="53" y="128" width="28" height="13" rx="6.5" fill="none"/>' +
+      '<rect x="82" y="115" width="28" height="13" rx="6.5" fill="none"/>' +
+      '<rect x="111" y="128" width="28" height="13" rx="6.5" fill="none"/>' +
+      '<rect x="140" y="115" width="28" height="13" rx="6.5" fill="none"/>' +
+    '</g>' +
+    '<path class="far" d="M100 52 L116 68"/>' +
+    '<path class="trunk" d="M100 44 L100 76"/>' +
+    '<circle class="head" cx="100" cy="30" r="10"/>' +
+    '<path class="limb" d="M100 52 L84 68"/>' +
+    '<path class="limb" d="M100 76 L92 100"/>' +
+    '<path class="limb" d="M100 76 L108 100"/>')
+};
+
+const ROUTINES = {
+  mobility: {
+    label:'Mobility', closing:"That's the hard part finished.",
+    moves:[
+      { name:'Couch stretch', time:60, art:ART.couch, sides:['Left leg back','Right leg back'],
+        steps:['Back foot up on a couch or chair, front foot flat',
+               'Squeeze the back glute and push your hips forward',
+               'Keep the lower back flat, do not arch it'] },
+      { name:'Bench lat stretch', time:45, art:ART.lat, sides:['Left arm','Right arm'],
+        steps:['Kneel with your elbow on the couch or a bench',
+               'Sink your chest toward the floor',
+               'Feel it down the side, armpit to hip'] },
+      { name:'90/90 hip stretch', time:45, art:ART.ninety, sides:['Left leg front','Right leg front'],
+        steps:['Sit on the floor, both legs flat, both knees bent 90',
+               'Front knee rests on its outside. Back knee rests on its inside',
+               'Sit tall, then hinge forward over the front leg'] },
+      { name:'Thoracic rotation', time:30, art:ART.thoracic, sides:['Left side down','Right side down'],
+        steps:['On your side, knees stacked and bent 90',
+               'Arms straight out in front, palms together',
+               'Open the top arm like a book, follow it with your eyes'] },
+      { name:'Doorway pec stretch', time:45, art:ART.pec, sides:['Left arm','Right arm'],
+        steps:['Forearm flat on the doorframe, elbow at 90',
+               'Step forward through the doorway',
+               'Stop when you feel the chest, not the shoulder joint'] },
+      { name:'Standing calf stretch', time:45, art:ART.calf, sides:['Left leg back','Right leg back'],
+        steps:['Hands on the wall, back leg straight',
+               'Press the back heel down hard into the floor',
+               'Bend the front knee to lean further in'] },
+      { name:'Deep squat hold', time:60, art:ART.squat, sides:null,
+        steps:['Feet shoulder-width or wider, toes turned out',
+               'Sit all the way down and keep both heels flat',
+               'Hold a doorframe if you tip backward'] }
+    ]
+  },
+  balance: {
+    label:'Balance', closing:'Warm joints, work done, gym bag packed.',
+    moves:[
+      { name:'Single-leg stand', time:30, art:ART.stand, sides:['Left foot','Right foot'],
+        steps:['Lift one foot, standing knee slightly bent',
+               'Fix your eyes on a point on the wall',
+               'When this is easy, add slow head turns'] },
+      { name:'Rapid multi-directional stepping', time:45, art:ART.step, sides:null,
+        steps:['One foot out, land firmly, back to center. Other foot stays planted',
+               'Sweep clockwise: R does 12 round to 6, then L does 6 round to 12',
+               'Torso stays facing 12. Speed and landing accuracy are the point'] },
+      { name:'Single-leg Romanian deadlift', time:35, art:ART.slrdl,
+        sides:['Left foot, 8 reps','Right foot, 8 reps'],
+        steps:['Hinge at the hip, back leg straight out behind you',
+               'Reach your fingers toward the floor, then stand up',
+               'Standing knee stays soft. Go by reps, not the clock'] },
+      { name:'Single-leg stand, eyes closed', time:20, art:ART.closed,
+        sides:['Left foot','Right foot'],
+        steps:['Same stand, eyes fully closed',
+               'Ten to twenty seconds is normal at first',
+               'Stay within reach of a wall'] },
+      { name:'Tandem walk', time:50, art:ART.tandem, sides:null,
+        steps:['Heel of the front foot touching the toe of the back foot',
+               'Twenty steps forward, then twenty walking backward',
+               'When easy, add head turns, then count back by sevens'] }
+    ]
+  }
+};
+
+const PREP = 5, CHANGE = 4;
+let steps = [], idx = 0, remain = 0, total = 0;
+let ticker = null, paused = false, current = null;
+let voiceOn = true, beepOn = true, wakeLock = null, audioCtx = null;
+
+const $ = id => document.getElementById(id);
+const el = {
+  menu:$('menu'), session:$('session'), done:$('done'), stage:$('stage'),
+  clock:$('clock'), phase:$('phase'), bar:$('bar'),
+  movename:$('movename'), side:$('side'), steps:$('steps'),
+  count:$('count'), pips:$('pips'),
+  playpause:$('playpause'), skip:$('skip'), back:$('back'), quit:$('quit'),
+  doneTitle:$('done-title'), doneSub:$('done-sub'), doneStreak:$('done-streak'),
+  tVoice:$('t-voice'), tBeep:$('t-beep')
+};
+
+function buildSteps(key){
+  const r = ROUTINES[key], out = [];
+  const m0 = r.moves[0];
+  out.push({ kind:'prep', time:PREP, label:'Get ready', name:m0.name,
+             side:m0.sides?m0.sides[0]:'', steps:m0.steps, art:m0.art, move:0 });
+  r.moves.forEach((m, mi) => {
+    (m.sides || [null]).forEach((s, si) => {
+      if(!(mi===0 && si===0)){
+        out.push({ kind:'change', time:CHANGE, label: si>0?'Switch':'Next',
+                   name:m.name, side:s||'', steps:m.steps, art:m.art, move:mi });
+      }
+      out.push({ kind:'hold', time:m.time, label:'Hold',
+                 name:m.name, side:s||'', steps:m.steps, art:m.art, move:mi });
+    });
+  });
+  return out;
+}
+
+function ctx(){
+  if(!audioCtx){ const AC = window.AudioContext||window.webkitAudioContext; if(AC) audioCtx = new AC(); }
+  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function beep(f, ms, vol){
+  if(!beepOn) return; const c = ctx(); if(!c) return;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type='sine'; o.frequency.value=f;
+  g.gain.setValueAtTime(0,c.currentTime);
+  g.gain.linearRampToValueAtTime(vol,c.currentTime+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+ms/1000);
+  o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+ms/1000+0.02);
+}
+function say(t){
+  if(!voiceOn || !('speechSynthesis' in window)) return;
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.98; speechSynthesis.speak(u);}catch(e){}
+}
+async function holdScreen(){ try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){} }
+function releaseScreen(){ try{ if(wakeLock){wakeLock.release(); wakeLock=null;} }catch(e){} }
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState==='visible' && el.session.classList.contains('on') && !paused) holdScreen();
+});
+
+function show(s){ [el.menu,el.session,el.done].forEach(x=>x.classList.remove('on')); s.classList.add('on'); }
+function phaseColor(k){
+  if(k==='prep') return 'var(--brass)';
+  if(k==='change') return 'var(--oxide)';
+  return current && current.label==='Balance' ? 'var(--oxide)' : 'var(--sinew)';
+}
+function fmt(s){ const m=Math.floor(s/60), r=s%60; return m>0 ? m+':'+String(r).padStart(2,'0') : String(r); }
+
+function paintStep(){
+  const s = steps[idx];
+  document.documentElement.style.setProperty('--phase', phaseColor(s.kind));
+  el.stage.innerHTML = s.art;
+  el.phase.textContent = s.label;
+  el.movename.textContent = s.name;
+  el.side.textContent = s.side;
+  el.steps.innerHTML = s.steps.map(t => '<li>' + t + '</li>').join('');
+  el.count.textContent = (s.move+1) + ' of ' + current.moves.length;
+  el.pips.innerHTML = '';
+  for(let i=0;i<current.moves.length;i++){
+    const d = document.createElement('div');
+    d.className = 'pip' + (i<s.move?' done':i===s.move?' now':'');
+    el.pips.appendChild(d);
+  }
+  paintClock();
+}
+function paintClock(){
+  el.clock.textContent = fmt(Math.ceil(remain));
+  el.bar.style.transform = 'scaleX(' + (total>0?Math.max(0,remain/total):0) + ')';
+}
+
+function enter(i){
+  if(i>=steps.length){ finish(); return; }
+  idx = i; const s = steps[idx];
+  total = s.time; remain = s.time;
+  paintStep();
+  if(s.kind==='hold'){ beep(760,150,.16); say(s.side ? s.name+'. '+s.side : s.name); }
+  else if(s.kind==='change'){ beep(430,180,.14); say(s.label==='Switch'?'Switch sides':'Next, '+s.name); }
+  else { say('Starting '+current.label+'. First, '+s.name); }
+}
+function tick(){
+  if(paused) return;
+  remain -= 0.1;
+  if(remain<=0){ enter(idx+1); return; }
+  const w = Math.ceil(remain);
+  if(Math.abs(remain-w)<0.05 && w<=3 && w>=1) beep(steps[idx].kind==='hold'?620:520,80,.10);
+  paintClock();
+}
+function start(key){
+  current = ROUTINES[key]; steps = buildSteps(key); paused = false;
+  el.playpause.textContent='Pause'; show(el.session); ctx(); holdScreen();
+  enter(0); clearInterval(ticker); ticker = setInterval(tick,100);
+}
+function stop(){
+  clearInterval(ticker); ticker=null; releaseScreen();
+  if('speechSynthesis' in window) try{ speechSynthesis.cancel(); }catch(e){}
+}
+async function finish(){
+  stop(); beep(880,220,.18); setTimeout(()=>beep(1120,320,.16),200);
+  el.doneTitle.textContent = current.label+' done';
+  el.doneSub.textContent = current.closing;
+  say(current.label+' complete.');
+  show(el.done); el.doneStreak.textContent='';
+  try{
+    if(window.storage){
+      const key='log:'+current.label.toLowerCase(); let log=[];
+      try{ const got=await window.storage.get(key); if(got&&got.value) log=JSON.parse(got.value); }catch(e){}
+      const today=new Date().toISOString().slice(0,10);
+      if(!log.includes(today)) log.push(today);
+      log=log.slice(-60); await window.storage.set(key,JSON.stringify(log));
+      const cutoff=Date.now()-28*864e5;
+      const n=log.filter(d=>new Date(d+'T00:00:00').getTime()>=cutoff).length;
+      el.doneStreak.textContent = n+(n===1?' session':' sessions')+' in the last four weeks.';
+    }
+  }catch(e){}
+}
+
+document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>start(b.dataset.routine)));
+el.playpause.addEventListener('click',()=>{
+  paused=!paused; el.playpause.textContent=paused?'Resume':'Pause';
+  if(paused){ releaseScreen(); if('speechSynthesis' in window) try{speechSynthesis.cancel();}catch(e){} }
+  else { ctx(); holdScreen(); }
+});
+el.skip.addEventListener('click',()=>{
+  let n=idx+1; while(n<steps.length && steps[n].kind!=='hold') n++;
+  enter(Math.min(n,steps.length));
+});
+el.back.addEventListener('click',()=>{
+  let p=idx-1; while(p>0 && steps[p].kind!=='hold') p--;
+  enter(Math.max(0,p));
+});
+el.quit.addEventListener('click',()=>{ stop(); show(el.menu); });
+$('done-home').addEventListener('click',()=>show(el.menu));
+
+function bindToggle(btn,set){
+  btn.addEventListener('click',()=>{
+    const on = btn.getAttribute('aria-pressed')==='true';
+    btn.setAttribute('aria-pressed',String(!on)); set(!on); if(!on) ctx();
+  });
+}
+bindToggle(el.tVoice,v=>voiceOn=v);
+bindToggle(el.tBeep,v=>beepOn=v);
+
+document.addEventListener('keydown',e=>{
+  if(!el.session.classList.contains('on')) return;
+  if(e.code==='Space'){ e.preventDefault(); el.playpause.click(); }
+  if(e.code==='ArrowRight') el.skip.click();
+  if(e.code==='ArrowLeft') el.back.click();
+});
+
+paintClock();
+})();
+</script>
+</body>
+</html>
