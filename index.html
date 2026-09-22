@@ -163,7 +163,7 @@
   <section class="screen on" id="menu">
     <div class="masthead">
       <h1>Mobility<br>&amp; Balance</h1>
-      <p>Monday, Wednesday, Friday. Both routines, about sixteen minutes total.</p>
+      <p>Monday, Wednesday, Friday. Both routines, about eighteen minutes total.</p>
     </div>
 
     <button class="pick" data-routine="balance" style="--accent:var(--oxide)">
@@ -187,7 +187,7 @@
     <button class="pick" data-routine="mobility" style="--accent:var(--sinew)">
       <div class="txt">
         <h2>Mobility</h2>
-        <div class="meta">7 holds &middot; about 10 minutes</div>
+        <div class="meta">8 holds &middot; about 12 minutes</div>
         <div class="where">Evening, during the wait in your oral care routine.</div>
       </div>
       <svg class="thumb fig" viewBox="0 0 200 160" aria-hidden="true">
@@ -325,7 +325,20 @@ const ART = {
     '<path class="trunk" d="M114 94 L96 64"/>' +
     '<circle class="head" cx="89" cy="52" r="10.5"/>' +
     '<path class="limb" d="M94 62 L40 56"/>' +
-    '<path class="hot" d="M130 110 q12 10 12 24"/>'),
+    '<path class="hot" d="M128 106 q13 11 13 26"/>'),
+
+  calfbent: S(G +
+    '<path class="prop" d="M30 10 V146"/>' +
+    '<path class="far" d="M96 67 L44 65"/>' +
+    '<path class="limb" d="M114 94 L84 114 L80 140"/>' +
+    '<path class="foot" d="M70 143 H90"/>' +
+    '<path class="limb" d="M116 94 L124 122 L150 138"/>' +
+    '<path class="foot" d="M140 143 H162"/>' +
+    '<path class="trunk" d="M115 94 L96 64"/>' +
+    '<circle class="head" cx="89" cy="52" r="10.5"/>' +
+    '<path class="limb" d="M94 62 L40 56"/>' +
+    '<path class="arrow" d="M134 119 L113 116 M113 116 l7 -4 M113 116 l6 5"/>' +
+    '<path class="hot" d="M133 129 q11 5 13 14"/>'),
 
   squat: S(G +
     '<path class="far" d="M74 118 L112 119 L80 139"/>' +
@@ -431,10 +444,14 @@ const ROUTINES = {
         steps:['Forearm flat on the doorframe, elbow at 90',
                'Step forward through the doorway',
                'Stop when you feel the chest, not the shoulder joint'] },
-      { name:'Standing calf stretch', time:45, art:ART.calf, sides:['Left leg back','Right leg back'],
+      { name:'Calf stretch, knee straight', time:45, art:ART.calf, sides:['Left leg back','Right leg back'],
         steps:['Hands on the wall, back leg straight',
                'Press the back heel down hard into the floor',
-               'Bend the front knee to lean further in'] },
+               'This is the gastrocnemius, the upper calf'] },
+      { name:'Calf stretch, knee bent', time:45, art:ART.calfbent, sides:['Left leg back','Right leg back'],
+        steps:['Same wall, same leg, now bend the back knee',
+               'Keep that heel flat, let the knee travel forward',
+               'This is the soleus, the muscle that limits squat depth'] },
       { name:'Deep squat hold', time:60, art:ART.squat, sides:null,
         steps:['Feet shoulder-width or wider, toes turned out',
                'Sit all the way down and keep both heels flat',
